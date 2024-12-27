@@ -25,7 +25,7 @@ const fetchBtcPrice = async () => {
     }
 
     const data = await response.json();
-    const price = data.USD; i
+    const price = data.USD;
 
     const formattedPrice = price.toLocaleString('en-US', {
       minimumFractionDigits: 2,
