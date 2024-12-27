@@ -3,7 +3,6 @@ const admin = require('firebase-admin');
 const express = require('express');
 const app = express();
 
-
 const serviceAccountBase64 = process.env.SERVICE_ACCOUNT_KEY;
 
 const serviceAccount = JSON.parse(Buffer.from(serviceAccountBase64, 'base64').toString('utf-8'));
@@ -41,7 +40,7 @@ const sendPushNotification = async (token, btcPrice) => {
       title: 'BTC Price Update',
       body: `Current Bitcoin price: $${btcPrice}`,
     },
-    token: token, 
+    token: token,  
   };
 
   try {
@@ -53,7 +52,7 @@ const sendPushNotification = async (token, btcPrice) => {
 };
 
 const sendBtcNotification = async () => {
-  const token = 'fKiJCknhSPWZ_-OYYTUOm5:APA91bHgHkQ_5MbMRkv9UbAzNzMziDT1ARB-m-l1lzNChPnCxmn-oKOzU3FzuxUaHBrw2BnY-QUI3-xiv5DepVUP_gIBJikUIB3BV1qmvFBcaexY8NJJWy4'; // Geçerli FCM tokeni
+  const token = process.env.FCM_TOKEN; 
   const btcPrice = await fetchBtcPrice();
 
   if (btcPrice) {
@@ -65,11 +64,11 @@ const sendBtcNotification = async () => {
 
 setInterval(() => {
   sendBtcNotification();
-}, 5 *  1000); 
+}, 5 * 1000); 
 
-const port = process.env.PORT || 3000;  // Eğer Heroku'dan bir port gelmezse, lokal port 3000'i kullan
+const port = process.env.PORT || 3000;
 
-
+// Start the Express server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
