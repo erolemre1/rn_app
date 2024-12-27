@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const admin = require('firebase-admin');
 const express = require('express');
+const cron = require('node-cron');
 const app = express();
 
 const serviceAccountBase64 = process.env.SERVICE_ACCOUNT_KEY;
@@ -67,9 +68,11 @@ const sendBtcNotification = async () => {
   }
 };
 
-setInterval(() => {
+cron.schedule('0 9 * * *', () => {
   sendBtcNotification();
-}, 15 * 1000); 
+}, {
+  timezone: "Europe/Istanbul", 
+});
 
 const port = process.env.PORT || 3000;
 
