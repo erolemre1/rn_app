@@ -17,7 +17,7 @@ admin.initializeApp({
 // Fetch Bitcoin price from CoinGecko API
 const fetchBtcPrice = async () => {
   try {
-    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const response = await fetch('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?symbol=BTC');
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -72,7 +72,7 @@ const sendBtcNotification = async () => {
 // Send BTC notification every 5 minutes (300,000 ms)
 setInterval(() => {
   sendBtcNotification();
-}, 5 * 1000); 
+}, 15 * 1000); 
 
 // Define the port for the server (Heroku uses process.env.PORT)
 const port = process.env.PORT || 3000;
