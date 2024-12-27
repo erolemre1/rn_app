@@ -1,5 +1,8 @@
 const fetch = require('node-fetch');
 const admin = require('firebase-admin');
+const express = require('express');
+const app = express();
+
 
 const serviceAccountBase64 = process.env.SERVICE_ACCOUNT_KEY;
 
@@ -63,3 +66,10 @@ const sendBtcNotification = async () => {
 setInterval(() => {
   sendBtcNotification();
 }, 5 *  1000); 
+
+const port = process.env.PORT || 3000;  // Eğer Heroku'dan bir port gelmezse, lokal port 3000'i kullan
+
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
