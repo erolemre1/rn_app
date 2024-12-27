@@ -3,25 +3,30 @@ const admin = require('firebase-admin');
 const express = require('express');
 const app = express();
 
+// Firebase service account key (base64 encoded) from environment variable
 const serviceAccountBase64 = process.env.SERVICE_ACCOUNT_KEY;
 
+// Decode base64 and parse JSON for the Firebase Admin SDK
 const serviceAccount = JSON.parse(Buffer.from(serviceAccountBase64, 'base64').toString('utf-8'));
 
+// Initialize Firebase Admin SDK with the service account credentials
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+// Fetch Bitcoin price from CoinGecko API
 const fetchBtcPrice = async () => {
   try {
-    const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    let price = parseFloat(data.price);
+    let price = data.bitcoin.usd;
 
+    // Format price to 2 decimal places
     price = price.toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
@@ -34,13 +39,14 @@ const fetchBtcPrice = async () => {
   }
 };
 
+// Send a push notification via Firebase Cloud Messaging
 const sendPushNotification = async (token, btcPrice) => {
   const message = {
     notification: {
       title: 'BTC Price Update',
       body: `Current Bitcoin price: $${btcPrice}`,
     },
-    token: token,  
+    token: token,  // FCM token for the recipient device
   };
 
   try {
@@ -51,8 +57,9 @@ const sendPushNotification = async (token, btcPrice) => {
   }
 };
 
+// Function to fetch BTC price and send notification
 const sendBtcNotification = async () => {
-  const token = process.env.FCM_TOKEN; 
+  const token = process.env.FCM_TOKEN;  // Get FCM token from environment variable
   const btcPrice = await fetchBtcPrice();
 
   if (btcPrice) {
@@ -62,10 +69,12 @@ const sendBtcNotification = async () => {
   }
 };
 
+// Send BTC notification every 5 minutes (300,000 ms)
 setInterval(() => {
   sendBtcNotification();
 }, 5 * 1000); 
 
+// Define the port for the server (Heroku uses process.env.PORT)
 const port = process.env.PORT || 3000;
 
 // Start the Express server
