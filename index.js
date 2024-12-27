@@ -17,7 +17,7 @@ admin.initializeApp({
 // Fetch Bitcoin price from CoinGecko API
 const fetchBtcPrice = async () => {
   try {
-    const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+    const response = await fetch('https://api-gcp.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
