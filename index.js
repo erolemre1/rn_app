@@ -15,8 +15,9 @@ const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY;
 
 let currentToken = null;
 let interval = 15000;
-let intervalId = null
+let intervalId = null; // Interval ID'yi tutacak değişken
 
+// Token kaydetmek için endpoint
 app.post('/register-token', (req, res) => {
   const { token } = req.body;
 
@@ -39,19 +40,22 @@ app.post('/set-interval', (req, res) => {
 
   console.log("newInterval", newInterval);
 
+  // Yeni interval değerini ayarla
   interval = newInterval;
 
+  // Eğer bir interval zamanlayıcısı varsa, durdur
   if (intervalId) {
     clearInterval(intervalId);
   }
 
+  // Yeni interval ile setInterval başlat
   intervalId = setInterval(() => {
     sendBtcNotificationToLast();
   }, interval);
 
   console.log('interval registered:', interval);
 
-  res.status(200).json({ message: 'Süre değiştirme başarılı.' });
+  res.status(200).json({ message: 'interval registered successfully.' });
 });
 
 app.get('/token', (req, res) => {
@@ -112,6 +116,7 @@ const sendBtcNotificationToLast = async () => {
   }
 };
 
+// Başlangıçta interval'i başlat
 intervalId = setInterval(() => {
   sendBtcNotificationToLast();
 }, interval);
