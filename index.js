@@ -15,47 +15,43 @@ const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY;
 
 let currentToken = null;
 let interval = 15000;
-let intervalId = null; // Interval ID'yi tutacak değişken
+let intervalId = null; 
 
-// Token kaydetmek için endpoint
 app.post('/register-token', (req, res) => {
   const { token } = req.body;
 
   if (!token) {
-    return res.status(400).json({ message: 'Token is required.' });
+    return res.status(400).json({ message: 'Token kaydedilemedi.' });
   }
 
   currentToken = token;
   console.log('Token registered:', token);
 
-  res.status(200).json({ message: 'Token registered successfully.' });
+  res.status(200).json({ message: 'Token kaydedildi' });
 });
 
 app.post('/set-interval', (req, res) => {
   const { interval: newInterval } = req.body;
 
   if (!newInterval) {
-    return res.status(400).json({ message: 'interval is required.' });
+    return res.status(400).json({ message: 'Süre Ayarlanamadı' });
   }
 
   console.log("newInterval", newInterval);
 
-  // Yeni interval değerini ayarla
   interval = newInterval;
 
-  // Eğer bir interval zamanlayıcısı varsa, durdur
   if (intervalId) {
     clearInterval(intervalId);
   }
 
-  // Yeni interval ile setInterval başlat
   intervalId = setInterval(() => {
     sendBtcNotificationToLast();
   }, interval);
 
   console.log('interval registered:', interval);
 
-  res.status(200).json({ message: 'interval registered successfully.' });
+  res.status(200).json({ message: 'Süre Ayarlandı' });
 });
 
 app.get('/token', (req, res) => {
@@ -116,7 +112,6 @@ const sendBtcNotificationToLast = async () => {
   }
 };
 
-// Başlangıçta interval'i başlat
 intervalId = setInterval(() => {
   sendBtcNotificationToLast();
 }, interval);
@@ -126,7 +121,3 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-// setInterval(() => {
-//   sendBtcNotificationToLast();
-// }, 3600 * 1000);
