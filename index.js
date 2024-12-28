@@ -13,39 +13,32 @@ admin.initializeApp({
 
 const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY;
 
-
-let tokens = [];
+let currentToken = null;
 
 // Token kaydetmek için endpoint
 app.post('/register-token', (req, res) => {
   const { token } = req.body;
 
-  console.log("token",token)
 
   if (!token) {
     return res.status(400).json({ message: 'Token is required.' });
   }
 
-  if (!tokens.includes(token)) {
-    tokens.push(token);
-    console.log('New token registered:', token);
-  }
+  currentToken = token;
+  console.log('Token registered:', token);
 
   res.status(200).json({ message: 'Token registered successfully.' });
 });
 
-// Token'ları görmek için (sadece test amaçlı)
-app.get('/tokens', (req, res) => {
-  res.json(tokens);
+app.get('/token', (req, res) => {
+  res.json({ token: currentToken });
 });
-
-
 
 const fetchBtcPrice = async () => {
   try {
     const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD', {
       headers: {
-        'Authorization': `Apikey ${CRYPTOCOMPARE_API_KEY}`, 
+        'Authorization': `Apikey ${CRYPTOCOMPARE_API_KEY}`,
       },
     });
 
@@ -74,7 +67,7 @@ const sendPushNotification = async (token, btcPrice) => {
       title: 'BTC Price Update',
       body: `Current Bitcoin price: $${btcPrice}`,
     },
-    token: token, 
+    token: token,
   };
 
   try {
@@ -85,21 +78,19 @@ const sendPushNotification = async (token, btcPrice) => {
   }
 };
 
-const sendBtcNotification = async () => {
-  const token = process.env.FCM_TOKEN;
+const sendBtcNotificationToLast = async () => {
   const btcPrice = await fetchBtcPrice();
 
-  if (btcPrice) {
-    await sendPushNotification(token, btcPrice);
+  if (btcPrice && currentToken) {
+    await sendPushNotification(currentToken, btcPrice);
   } else {
-    console.error('Could not fetch BTC price.');
+    console.error('No token found or BTC price could not be fetched.');
   }
 };
 
 setInterval(() => {
-  sendBtcNotification();
-}, 60 * 1000); 
-
+  sendBtcNotificationToLast();
+}, 15 * 1000); 
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
