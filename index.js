@@ -14,10 +14,12 @@ admin.initializeApp({
 const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY;
 
 let currentToken = null;
+let interval = null;
 
 // Token kaydetmek için endpoint
 app.post('/register-token', (req, res) => {
   const { token } = req.body;
+
 
   if (!token) {
     return res.status(400).json({ message: 'Token is required.' });
@@ -27,6 +29,20 @@ app.post('/register-token', (req, res) => {
   console.log('Token registered:', token);
 
   res.status(200).json({ message: 'Token registered successfully.' });
+});
+
+app.post('/set-interval', (req, res) => {
+  const { interval } = req.body;
+
+
+  if (!interval) {
+    return res.status(400).json({ message: 'interval is required.' });
+  }
+
+  interval = interval;
+  console.log('interval registered:', interval);
+
+  res.status(200).json({ message: 'interval registered successfully.' });
 });
 
 app.get('/token', (req, res) => {
@@ -67,18 +83,6 @@ const sendPushNotification = async (token, btcPrice) => {
       body: `Current Bitcoin price: $${btcPrice}`,
     },
     token: token,
-    android: {
-      notification: {
-        sound: 'arrived.mp3',  // Android için özel ses
-      },
-    },
-    // apns: {
-    //   payload: {
-    //     aps: {
-    //       sound: 'arrived.mp3',  // iOS için özel ses
-    //     },
-    //   },
-    // },
   };
 
   try {
@@ -101,13 +105,13 @@ const sendBtcNotificationToLast = async () => {
 
 setInterval(() => {
   sendBtcNotificationToLast();
-}, 15 * 1000); 
+}, interval); 
+
+// setInterval(() => {
+//   sendBtcNotificationToLast();
+// }, 3600 * 1000);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-// setInterval(() => {
-//   sendBtcNotificationToLast();
-// }, 3600 * 1000);
