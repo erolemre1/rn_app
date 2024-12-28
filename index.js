@@ -14,7 +14,7 @@ admin.initializeApp({
 const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY;
 
 let currentToken = null;
-let interval = null;
+let interval = 15000;
 
 // Token kaydetmek için endpoint
 app.post('/register-token', (req, res) => {
