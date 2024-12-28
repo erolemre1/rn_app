@@ -17,7 +17,6 @@ let currentToken = null;
 let interval = 15000;
 let intervalId = null
 
-// Token kaydetmek için endpoint
 app.post('/register-token', (req, res) => {
   const { token } = req.body;
 
@@ -52,7 +51,7 @@ app.post('/set-interval', (req, res) => {
 
   console.log('interval registered:', interval);
 
-  res.status(200).json({ message: 'interval registered successfully.' });
+  res.status(200).json({ message: 'Süre değiştirme başarılı.' });
 });
 
 app.get('/token', (req, res) => {
