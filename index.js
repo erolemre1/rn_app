@@ -15,11 +15,11 @@ const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY;
 
 let currentToken = null;
 let interval = 15000;
+let intervalId = null
 
 // Token kaydetmek için endpoint
 app.post('/register-token', (req, res) => {
   const { token } = req.body;
-
 
   if (!token) {
     return res.status(400).json({ message: 'Token is required.' });
@@ -32,13 +32,24 @@ app.post('/register-token', (req, res) => {
 });
 
 app.post('/set-interval', (req, res) => {
-  const { interval: newInterval } = req.body; // interval ismini değiştirebilirsiniz
+  const { interval: newInterval } = req.body;
 
   if (!newInterval) {
     return res.status(400).json({ message: 'interval is required.' });
   }
-console.log("newIntervalnewInterval",newInterval)
-  interval = newInterval; // Bu satırda 'interval' değişkeni artık güncellenebilir.
+
+  console.log("newInterval", newInterval);
+
+  interval = newInterval;
+
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+
+  intervalId = setInterval(() => {
+    sendBtcNotificationToLast();
+  }, interval);
+
   console.log('interval registered:', interval);
 
   res.status(200).json({ message: 'interval registered successfully.' });
@@ -102,15 +113,16 @@ const sendBtcNotificationToLast = async () => {
   }
 };
 
-setInterval(() => {
+intervalId = setInterval(() => {
   sendBtcNotificationToLast();
-}, interval); 
+}, interval);
 
-// setInterval(() => {
-//   sendBtcNotificationToLast();
-// }, 3600 * 1000);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// setInterval(() => {
+//   sendBtcNotificationToLast();
+// }, 3600 * 1000);
