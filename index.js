@@ -37,7 +37,7 @@ app.post('/set-interval', (req, res) => {
   if (!newInterval) {
     return res.status(400).json({ message: 'interval is required.' });
   }
-
+console.log("newIntervalnewInterval",newInterval)
   interval = newInterval; // Bu satırda 'interval' değişkeni artık güncellenebilir.
   console.log('interval registered:', interval);
 
