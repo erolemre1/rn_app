@@ -32,14 +32,13 @@ app.post('/register-token', (req, res) => {
 });
 
 app.post('/set-interval', (req, res) => {
-  const { interval } = req.body;
+  const { interval: newInterval } = req.body; // interval ismini değiştirebilirsiniz
 
-
-  if (!interval) {
+  if (!newInterval) {
     return res.status(400).json({ message: 'interval is required.' });
   }
 
-  interval = interval;
+  interval = newInterval; // Bu satırda 'interval' değişkeni artık güncellenebilir.
   console.log('interval registered:', interval);
 
   res.status(200).json({ message: 'interval registered successfully.' });
