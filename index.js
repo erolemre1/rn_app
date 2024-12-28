@@ -2,15 +2,44 @@ const fetch = require('node-fetch');
 const admin = require('firebase-admin');
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 
 const serviceAccountBase64 = process.env.SERVICE_ACCOUNT_KEY;
 const serviceAccount = JSON.parse(Buffer.from(serviceAccountBase64, 'base64').toString('utf-8'));
-
+app.use(bodyParser.json());
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
 const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY;
+
+
+let tokens = [];
+
+// Token kaydetmek için endpoint
+app.post('/register-token', (req, res) => {
+  const { token } = req.body;
+
+  console.log("token",token)
+
+  if (!token) {
+    return res.status(400).json({ message: 'Token is required.' });
+  }
+
+  if (!tokens.includes(token)) {
+    tokens.push(token);
+    console.log('New token registered:', token);
+  }
+
+  res.status(200).json({ message: 'Token registered successfully.' });
+});
+
+// Token'ları görmek için (sadece test amaçlı)
+app.get('/tokens', (req, res) => {
+  res.json(tokens);
+});
+
+
 
 const fetchBtcPrice = async () => {
   try {
