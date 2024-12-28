@@ -19,7 +19,6 @@ let currentToken = null;
 app.post('/register-token', (req, res) => {
   const { token } = req.body;
 
-
   if (!token) {
     return res.status(400).json({ message: 'Token is required.' });
   }
@@ -68,6 +67,18 @@ const sendPushNotification = async (token, btcPrice) => {
       body: `Current Bitcoin price: $${btcPrice}`,
     },
     token: token,
+    android: {
+      notification: {
+        sound: 'arrived.mp3',  // Android için özel ses
+      },
+    },
+    // apns: {
+    //   payload: {
+    //     aps: {
+    //       sound: 'arrived.mp3',  // iOS için özel ses
+    //     },
+    //   },
+    // },
   };
 
   try {
@@ -96,3 +107,7 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// setInterval(() => {
+//   sendBtcNotificationToLast();
+// }, 3600 * 1000);
