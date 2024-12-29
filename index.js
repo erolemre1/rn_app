@@ -88,8 +88,8 @@ const fetchBtcPrice = async () => {
 const sendPushNotification = async (token, btcPrice) => {
   const message = {
     notification: {
-      title: 'BTC Price Update',
-      body: `Current Bitcoin price: $${btcPrice}`,
+      title: 'BTC',
+      body: `Güncel Fiyat: $${btcPrice}`,
     },
     token: token,
   };
