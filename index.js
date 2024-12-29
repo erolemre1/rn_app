@@ -116,6 +116,40 @@ intervalId = setInterval(() => {
   sendBtcNotificationToLast();
 }, interval);
 
+
+
+
+
+
+
+
+
+
+
+
+
+//led
+
+
+let ledCommand = "OFF"; // Başlangıçta LED kapalı
+
+// Frontend'den gelen istek
+app.post("/api/set-led", (req, res) => {
+  const command = req.query.command; // Örneğin: /api/set-led?command=ON
+  if (command === "ON" || command === "OFF") {
+    ledCommand = command;
+    res.status(200).send(`LED ${command}`);
+  } else {
+    res.status(400).send("Geçersiz komut");
+  }
+});
+
+// ESP32'nin komut alması için endpoint
+app.get("/api/led-command", (req, res) => {
+  res.send(ledCommand);
+});
+
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
