@@ -145,7 +145,7 @@ app.post("/api/set-led", (req, res) => {
 });
 
 // ESP32'nin komut alması için endpoint
-app.get("/api/led-command", (req, res) => {
+app.get("/api/led-status", (req, res) => {
   res.send(ledCommand);
 });
 
