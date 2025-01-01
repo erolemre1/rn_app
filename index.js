@@ -126,7 +126,7 @@ app.post("/api/set-led", (req, res) => {
     ledCommand = command;
     res.status(200).send(`LED ${command}`);
   } else if (command === "ONBUZZER") {
-    
+    ledCommand = command;
   }else {
     res.status(400).send("Geçersiz komut");
   }
