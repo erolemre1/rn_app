@@ -122,12 +122,10 @@ let ledCommand = "OFF"; // Başlangıçta LED kapalı
 // Frontend'den gelen istek
 app.post("/api/set-led", (req, res) => {
   const command = req.query.command; // Örneğin: /api/set-led?command=ON
-  if (command === "ONLED" || command === "OFFLED") {
+  if (command === "ONLED" || command === "OFFLED" || command === "ONBUZZER") {
     ledCommand = command;
     res.status(200).send(`LED ${command}`);
-  } else if (command === "ONBUZZER") {
-    ledCommand = command;
-  }else {
+  } else {
     res.status(400).send("Geçersiz komut");
   }
 });
