@@ -136,6 +136,22 @@ app.get("/api/led-command", (req, res) => {
 });
 
 
+
+let distanceData = { distance: 0 };
+
+app.get('/api/measure', (req, res) => {
+  res.json(distanceData);
+});
+
+app.post('/api/measure', (req, res) => {
+  const { distance } = req.body;
+  distanceData.distance = distance; 
+  console.log('Yeni mesafe verisi alındı: ', distance);
+  res.status(200).send('Veri alındı');
+});
+
+
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
