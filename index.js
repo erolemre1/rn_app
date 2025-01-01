@@ -14,7 +14,7 @@ admin.initializeApp({
 const CRYPTOCOMPARE_API_KEY = process.env.CRYPTOCOMPARE_API_KEY;
 
 let currentToken = null;
-let interval = 15000;
+let interval = 3600000;
 let intervalId = null; 
 
 app.post('/register-token', (req, res) => {
@@ -117,35 +117,23 @@ intervalId = setInterval(() => {
 }, interval);
 
 
-
-
-
-
-
-
-
-
-
-
-
-//led
-
-
 let ledCommand = "OFF"; // Başlangıçta LED kapalı
 
 // Frontend'den gelen istek
 app.post("/api/set-led", (req, res) => {
   const command = req.query.command; // Örneğin: /api/set-led?command=ON
-  if (command === "ON" || command === "OFF") {
+  if (command === "ONLED" || command === "OFFLED") {
     ledCommand = command;
     res.status(200).send(`LED ${command}`);
-  } else {
+  } else if (command === "ONBUZZER") {
+    
+  }else {
     res.status(400).send("Geçersiz komut");
   }
 });
 
 // ESP32'nin komut alması için endpoint
-app.get("/api/led-status", (req, res) => {
+app.get("/api/led-command", (req, res) => {
   res.send(ledCommand);
 });
 
